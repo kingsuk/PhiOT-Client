@@ -1,5 +1,6 @@
 package com.phibasis.www.phiotclient;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
+    public void onFragmentInteraction(String fragment) {
+        ProjectConfig.StaticToast(getApplicationContext(),fragment);
     }
 }

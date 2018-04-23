@@ -1,6 +1,8 @@
 package com.phibasis.www.phiotclient.Fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -70,10 +72,28 @@ public class DashboardFragment extends Fragment {
                     {
                         JSONObject jsonObject= responseArray.getJSONObject(i);
 
-                        View list_device = getLayoutInflater().inflate(R.layout.list_device, null, false);
+                        final View list_device = getLayoutInflater().inflate(R.layout.list_device, null, false);
 
                         TextView tvDeviceName = list_device.findViewById(R.id.tvDeviceName);
                         tvDeviceName.setText(jsonObject.getString("deviceName"));
+
+                        ImageView ivDelete = list_device.findViewById(R.id.ivDelete);
+                        ivDelete.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ProjectConfig.StaticToast(getContext(),"Delete Click");
+                                new AlertDialog.Builder(getContext())
+                                        .setTitle("Delete device.")
+                                        .setMessage("Are you sure you want to delete it?")
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                                            public void onClick(DialogInterface dialog, int whichButton) {
+                                                Toast.makeText(getContext(), "Yaay", Toast.LENGTH_SHORT).show();
+                                            }})
+                                        .setNegativeButton(android.R.string.no, null).show();
+                            }
+                        });
 
                         ImageView ivDeviceTypeImage = list_device.findViewById(R.id.ivDeviceTypeImage);
                         if(jsonObject.getInt("device_type_id")==1)
@@ -84,6 +104,14 @@ public class DashboardFragment extends Fragment {
                         {
                             ivDeviceTypeImage.setImageResource(R.drawable.devicetype2);
                         }
+
+                        list_device.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                OnFragmentInteractionListener listener = (OnFragmentInteractionListener) getActivity();
+                                listener.onFragmentInteraction("Hello");
+                            }
+                        });
 
                         llDevices.addView(list_device);
                     }
@@ -104,7 +132,7 @@ public class DashboardFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(String fragment);
     }
 
 
