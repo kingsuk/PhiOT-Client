@@ -25,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.Api;
+import com.phibasis.www.phiotclient.DatasetActivity;
 import com.phibasis.www.phiotclient.LoginActivity;
 import com.phibasis.www.phiotclient.MainActivity;
 import com.phibasis.www.phiotclient.R;
@@ -76,6 +77,12 @@ public class DashboardFragment extends Fragment {
 
                         TextView tvDeviceName = list_device.findViewById(R.id.tvDeviceName);
                         tvDeviceName.setText(jsonObject.getString("deviceName"));
+                        tvDeviceName.setTag(jsonObject.getString("id"));
+
+                        TextView tvDeviceToken = list_device.findViewById(R.id.tvDeviceToken);
+                        tvDeviceToken.setTag(jsonObject.getString("device_token"));
+                        tvDeviceToken.setText(jsonObject.getString("device_token"));
+
 
                         ImageView ivDelete = list_device.findViewById(R.id.ivDelete);
                         ivDelete.setOnClickListener(new View.OnClickListener() {
@@ -108,8 +115,10 @@ public class DashboardFragment extends Fragment {
                         list_device.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                OnFragmentInteractionListener listener = (OnFragmentInteractionListener) getActivity();
-                                listener.onFragmentInteraction("Hello");
+                                Intent i = new Intent(getContext(), DatasetActivity.class);
+                                i.putExtra("ds_deviceId",view.findViewById(R.id.tvDeviceName).getTag().toString());
+                                i.putExtra("token",view.findViewById(R.id.tvDeviceToken).getTag().toString());
+                                getContext().startActivity(i);
                             }
                         });
 

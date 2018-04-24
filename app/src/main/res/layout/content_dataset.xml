@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".DatasetActivity"
+    tools:showIn="@layout/activity_dataset"
+    android:background="@color/blacktint">
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Device Name:"
+                        android:gravity="center"
+                        android:textColor="@color/textColor"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Device Name"
+                        android:id="@+id/tvDeviceName"
+                        android:textSize="25dp"
+                        android:gravity="center"
+                        android:textColor="@color/textColor"/>
+                    <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Device Token:"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:textColor="@color/textColor"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Device Token"
+                        android:textSize="25dp"
+                        android:id="@+id/tvDeviceToken"
+                        android:gravity="center"
+                        android:textColor="@color/textColor"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Api Calls Left:"
+                        android:layout_marginTop="15dp"
+                        android:gravity="center"
+                        android:textColor="@color/textColor"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="25"
+                        android:textSize="45dp"
+                        android:id="@+id/tvNoOfCall"
+                        android:gravity="center"
+                        android:layout_marginBottom="20dp"
+                        android:textColor="@color/textColor"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/llDatasets"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+
+
+
+</android.support.constraint.ConstraintLayout>

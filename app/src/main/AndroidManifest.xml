@@ -25,11 +25,16 @@
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoTitleOrActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        </activity>
+        <activity
+            android:name=".DatasetActivity"
+            android:label="@string/title_activity_dataset"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.phibasis.www.phiotclient.MainActivity" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
