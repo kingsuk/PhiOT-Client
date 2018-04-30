@@ -47,77 +47,85 @@ public final class ApiHelper {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
-                if(error.networkResponse.statusCode==400)
-                {
-                    try
+                try {
+                    if(error.networkResponse.statusCode==400)
                     {
-                        JSONObject jsonObject = new JSONObject(new String(error.networkResponse.data));
-                        Iterator<String> keys = jsonObject.keys();
-                        while (keys.hasNext())
+                        try
                         {
-                            String key = keys.next();
-                            JSONArray returnArr = jsonObject.getJSONArray(key);
-                            for(int i=0;i<returnArr.length();i++)
+                            JSONObject jsonObject = new JSONObject(new String(error.networkResponse.data));
+                            Iterator<String> keys = jsonObject.keys();
+                            while (keys.hasNext())
                             {
-                                String message = returnArr.getString(i);
-                                Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
+                                String key = keys.next();
+                                JSONArray returnArr = jsonObject.getJSONArray(key);
+                                for(int i=0;i<returnArr.length();i++)
+                                {
+                                    String message = returnArr.getString(i);
+                                    Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
 
+                                }
                             }
+
+                        }
+                        catch (Exception e)
+                        {
+                            Toast.makeText(context,"Something went wrong!",Toast.LENGTH_SHORT).show();
+                            ProjectConfig.StaticLog(e.getMessage());
                         }
 
                     }
-                    catch (Exception e)
+                    else if(error.networkResponse.statusCode==403)
                     {
-                        Toast.makeText(context,"Something went wrong!",Toast.LENGTH_SHORT).show();
-                        ProjectConfig.StaticLog(new String(error.networkResponse.data));
-                    }
+                        try
+                        {
+                            //JSONObject jsonObject = new JSONObject(new String(error.networkResponse.data));
+                            Toast.makeText(context,new String(error.networkResponse.data),Toast.LENGTH_SHORT).show();
 
+                        }
+                        catch (Exception e)
+                        {
+                            Toast.makeText(context,"Something went wrong!",Toast.LENGTH_SHORT).show();
+                            ProjectConfig.StaticLog(e.getMessage());
+                        }
+
+                    }
+                    else if(error.networkResponse.statusCode==401)
+                    {
+                        try
+                        {
+                            ProjectConfig.StaticToast(context,"You are unauthorized to make this request,Please log in agian.");
+                            Intent i = new Intent(context,LoginActivity.class);
+                            context.startActivity(i);
+
+                        }
+                        catch (Exception e)
+                        {
+                            Toast.makeText(context,"Something went wrong!",Toast.LENGTH_SHORT).show();
+                            ProjectConfig.StaticLog(e.getMessage());
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            Toast.makeText(context,"Something went wrong!",Toast.LENGTH_SHORT).show();
+                            ProjectConfig.StaticLog(new String(error.networkResponse.data));
+                        }
+                        catch (Exception e)
+                        {
+                            Toast.makeText(context,"Something went wrong!",Toast.LENGTH_SHORT).show();
+                            ProjectConfig.StaticLog(e.getMessage());
+                        }
+
+                    }
                 }
-                else if(error.networkResponse.statusCode==403)
+                catch (Exception e)
                 {
-                    try
-                    {
-                        JSONObject jsonObject = new JSONObject(new String(error.networkResponse.data));
-                        Toast.makeText(context,jsonObject.getString("statusMessage"),Toast.LENGTH_SHORT).show();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Toast.makeText(context,"Something went wrong!",Toast.LENGTH_SHORT).show();
-                        ProjectConfig.StaticLog(new String(error.networkResponse.data));
-                    }
-
+                    Toast.makeText(context,e.getMessage(),Toast.LENGTH_SHORT).show();
+                    ProjectConfig.StaticLog(e.getMessage());
                 }
-                else if(error.networkResponse.statusCode==401)
-                {
-                    try
-                    {
-                        ProjectConfig.StaticToast(context,"You are unauthorized to make this request,Please log in agian.");
-                        Intent i = new Intent(context,LoginActivity.class);
-                        context.startActivity(i);
 
-                    }
-                    catch (Exception e)
-                    {
-                        Toast.makeText(context,"Something went wrong!",Toast.LENGTH_SHORT).show();
-                        ProjectConfig.StaticLog(new String(error.networkResponse.data));
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        Toast.makeText(context,"Something went wrong!",Toast.LENGTH_SHORT).show();
-                        ProjectConfig.StaticLog(new String(error.networkResponse.data));
-                    }
-                    catch (Exception e)
-                    {
-                        Toast.makeText(context,"Something went wrong!",Toast.LENGTH_SHORT).show();
-                        ProjectConfig.StaticLog(new String(error.networkResponse.data));
-                    }
 
-                }
 
             }
         }){

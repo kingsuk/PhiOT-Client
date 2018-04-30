@@ -62,6 +62,21 @@ public class DashboardFragment extends Fragment {
 
         llDevices = (LinearLayout) fragView.findViewById(R.id.llDevices);
 
+        BindView();
+
+        //apiCall("asdf","asdf");
+        return fragView;
+
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(String fragment);
+    }
+
+    public void BindView()
+    {
+        llDevices.removeAllViews();
         ApiHelper.Call(getContext(),"device/GetAllDevicesByUser","", new VolleyCallback() {
             @Override
             public void onSuccessResponse(String result) {
@@ -85,18 +100,37 @@ public class DashboardFragment extends Fragment {
 
 
                         ImageView ivDelete = list_device.findViewById(R.id.ivDelete);
+                        ivDelete.setTag(jsonObject.getString("id"));
                         ivDelete.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(View view) {
-                                ProjectConfig.StaticToast(getContext(),"Delete Click");
+                            public void onClick(final View view) {
+
                                 new AlertDialog.Builder(getContext())
                                         .setTitle("Delete device.")
-                                        .setMessage("Are you sure you want to delete it?")
+                                        .setMessage("Are you sure you want to delete ?")
                                         .setIcon(android.R.drawable.ic_dialog_alert)
-                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
 
                                             public void onClick(DialogInterface dialog, int whichButton) {
-                                                Toast.makeText(getContext(), "Yaay", Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(getContext(), "Yaay", Toast.LENGTH_SHORT).show();
+                                                String dataDeviceId = "id="+view.findViewById(R.id.ivDelete).getTag().toString();
+                                                ApiHelper.Call(getContext(), "device/DeleteDeviceByDeviceAndUserId?", dataDeviceId, new VolleyCallback() {
+                                                    @Override
+                                                    public void onSuccessResponse(String result) {
+                                                        try
+                                                        {
+
+                                                            JSONObject jsonObject1 = new JSONObject(result);
+                                                            ProjectConfig.StaticToast(getContext(),jsonObject1.getString("statusMessage"));
+                                                            BindView();
+                                                        }
+                                                        catch (Exception e)
+                                                        {
+                                                            ProjectConfig.StaticToast(getContext(),"Something went wrong while sending request ot device.");
+                                                            ProjectConfig.StaticLog(result);
+                                                        }
+                                                    }
+                                                });
                                             }})
                                         .setNegativeButton(android.R.string.no, null).show();
                             }
@@ -133,15 +167,6 @@ public class DashboardFragment extends Fragment {
                 }
             }
         });
-
-        //apiCall("asdf","asdf");
-        return fragView;
-
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(String fragment);
     }
 
 
