@@ -15,11 +15,12 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.phibasis.www.phiotclient.Fragments.DashboardFragment;
+import com.phibasis.www.phiotclient.Fragments.SetupDevice;
 
 import Helper.ProjectConfig;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener , DashboardFragment.OnFragmentInteractionListener{
+        implements NavigationView.OnNavigationItemSelectedListener , DashboardFragment.OnFragmentInteractionListener,SetupDevice.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,28 +83,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -114,7 +93,8 @@ public class MainActivity extends AppCompatActivity
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.container, new DashboardFragment());
             ft.commit();
-        } else if (id == R.id.nav_devices) {
+        }
+        else if (id == R.id.nav_logout) {
             SharedPreferences.Editor editor = getSharedPreferences(ProjectConfig.SharedPreferenceName, MODE_PRIVATE).edit();
             editor.putString("token", "");
             editor.putString("email","");
@@ -126,6 +106,12 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         }
+        else if(id == R.id.nav_setup_device)
+        {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.container, new SetupDevice());
+            ft.commit();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -134,14 +120,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(String fragment1) {
-        ProjectConfig.StaticToast(getApplicationContext(),fragment1);
 
-//        // Begin the transaction
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(R.id.container, new DatasetFragment());
-//        ft.addToBackStack("fdggs");
-//        ft.commit();
     }
 
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }

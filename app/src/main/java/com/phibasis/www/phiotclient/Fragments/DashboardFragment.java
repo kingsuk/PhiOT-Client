@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,9 +51,11 @@ import static android.content.Context.MODE_PRIVATE;
  * to handle interaction events.
  * create an instance of this fragment.
  */
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     LinearLayout llDevices;
+
+    SwipeRefreshLayout swiperefresh;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,11 +65,26 @@ public class DashboardFragment extends Fragment {
 
         llDevices = (LinearLayout) fragView.findViewById(R.id.llDevices);
 
+        swiperefresh = fragView.findViewById(R.id.swiperefresh);
+        swiperefresh.setOnRefreshListener(this);
+
+        swiperefresh.setRefreshing(true);
         BindView();
 
-        //apiCall("asdf","asdf");
         return fragView;
 
+    }
+
+    @Override
+    public void onRefresh() {
+        BindView();
+    }
+
+    public void stopSwipAnimation(){
+        if(swiperefresh.isRefreshing())
+        {
+            swiperefresh.setRefreshing(false);
+        }
     }
 
     public interface OnFragmentInteractionListener {
@@ -157,13 +175,16 @@ public class DashboardFragment extends Fragment {
                         });
 
                         llDevices.addView(list_device);
-                    }
 
+                    }
                 }
                 catch (Exception e)
                 {
                     ProjectConfig.StaticToast(getContext(),"Something went wrong while fetching device information.");
                     ProjectConfig.StaticLog(result);
+                }
+                finally {
+                    stopSwipAnimation();
                 }
             }
         });

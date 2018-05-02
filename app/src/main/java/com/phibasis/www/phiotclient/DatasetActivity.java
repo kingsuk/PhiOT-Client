@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -22,10 +23,11 @@ import Helper.ApiHelper;
 import Helper.ProjectConfig;
 import Helper.VolleyCallback;
 
-public class DatasetActivity extends AppCompatActivity {
+public class DatasetActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     LinearLayout llDatasets;
     String token;
+    SwipeRefreshLayout swiperefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,11 @@ public class DatasetActivity extends AppCompatActivity {
         //setSupportActionBar(toolbar);
         token = getIntent().getStringExtra("token");
         llDatasets = (LinearLayout) findViewById(R.id.llDatasets);
+
+        swiperefresh = findViewById(R.id.swiperefresh);
+        swiperefresh.setOnRefreshListener(this);
+
+
 
         String dataDeviceId = "deviceId="+getIntent().getStringExtra("ds_deviceId");
         ApiHelper.Call(getApplicationContext(), "device/GetDeviceInfoByDeviceId?", dataDeviceId, new VolleyCallback() {
@@ -78,7 +85,7 @@ public class DatasetActivity extends AppCompatActivity {
             }
         });
 
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        swiperefresh.setRefreshing(true);
         BindView();
     }
 
@@ -160,12 +167,16 @@ public class DatasetActivity extends AppCompatActivity {
                         });
 
                         llDatasets.addView(list_dataset);
+
                     }
                 }
                 catch (Exception e)
                 {
                     ProjectConfig.StaticToast(getApplicationContext(),"Something went wrong while fetching dataset information.");
                     ProjectConfig.StaticLog(result);
+                }
+                finally {
+                    stopSwipAnimation();
                 }
             }
         });
@@ -202,4 +213,15 @@ public class DatasetActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onRefresh() {
+        BindView();
+    }
+
+    public void stopSwipAnimation(){
+        if(swiperefresh.isRefreshing())
+        {
+            swiperefresh.setRefreshing(false);
+        }
+    }
 }
