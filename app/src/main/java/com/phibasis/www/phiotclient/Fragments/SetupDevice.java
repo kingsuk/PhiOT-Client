@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +45,7 @@ import static android.content.Context.WIFI_SERVICE;
 public class SetupDevice extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     LinearLayout llScans;
-
+    Button btnScan;
     SwipeRefreshLayout swiperefresh;
 
     @Override
@@ -60,14 +62,14 @@ public class SetupDevice extends Fragment implements SwipeRefreshLayout.OnRefres
         swiperefresh.setRefreshing(true);
         BindView();
 
-        // Create custom dialog object
-        final Dialog dialog = new Dialog(getContext());
-        // Include dialog.xml file
-        dialog.setContentView(R.layout.wifi_credentials);
-        // Set dialog title
-        dialog.setTitle("Custom Dialog");
+        btnScan = fragView.findViewById(R.id.btnScan);
+        btnScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BindView();
+            }
+        });
 
-        dialog.show();
 
         return fragView;
     }
@@ -87,7 +89,7 @@ public class SetupDevice extends Fragment implements SwipeRefreshLayout.OnRefres
     public void BindView()
     {
         llScans.removeAllViews();
-        ApiHelper.CallWithCustomBaseUrl(getContext(),ProjectConfig.PhiOT_Base_Url,"http://192.168.4.22/wifiscan","",new VolleyCallback(){
+        ApiHelper.CallWithCustomBaseUrl(getContext(),ProjectConfig.PhiOT_Base_Url,"wifiscan","",new VolleyCallback(){
 
             @Override
             public void onSuccessResponse(String result) {
@@ -97,17 +99,64 @@ public class SetupDevice extends Fragment implements SwipeRefreshLayout.OnRefres
 
                     for (int i = 0;i<jsonArray.length();i++)
                     {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        final JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                         final View list_scan = getLayoutInflater().inflate(R.layout.row, null, false);
                         TextView tvSsid = list_scan.findViewById(R.id.tvSsid);
                         tvSsid.setText(jsonObject.getString("ssid"));
+                        list_scan.setTag(jsonObject.getString("ssid"));
 
                         TextView tvEncryptionType = list_scan.findViewById(R.id.tvEncryptionType);
                         tvEncryptionType.setText(jsonObject.getString("encryptionType"));
 
                         TextView tvRssi = list_scan.findViewById(R.id.tvRssi);
                         tvRssi.setText(jsonObject.getString("rssi"));
+
+                        list_scan.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Create custom dialog object
+                                final Dialog dialog = new Dialog(getContext());
+                                dialog.setContentView(R.layout.wifi_credentials);
+
+                                TextView tvSsid = dialog.findViewById(R.id.tvSsid);
+                                tvSsid.setText(view.getTag().toString());
+
+                                final EditText etPassword = dialog.findViewById(R.id.etPassword);
+
+                                final Button btnConnectToWifi = dialog.findViewById(R.id.btnConnectToWifi);
+                                btnConnectToWifi.setTag(jsonObject);
+
+                                btnConnectToWifi.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        try
+                                        {
+                                            btnConnectToWifi.setText("Loading..");
+                                            btnConnectToWifi.setEnabled(false);
+                                            JSONObject innorJsonObject = new JSONObject(view.getTag().toString());
+                                            String data = "ssid="+innorJsonObject.getString("ssid")+"&password="+etPassword.getText().toString();
+
+                                            ApiHelper.CallWithCustomBaseUrl(getContext(), ProjectConfig.PhiOT_Base_Url, "wificonnect?", data, new VolleyCallback() {
+                                                @Override
+                                                public void onSuccessResponse(String result) {
+                                                    ProjectConfig.StaticToast(getContext(),result);
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            ProjectConfig.StaticToast(getContext(),"Something went wrong while fetching wifi information.");
+                                            ProjectConfig.StaticLog(e.getMessage());
+                                        }
+
+                                    }
+                                });
+
+                                dialog.show();
+                            }
+                        });
 
                         llScans.addView(list_scan);
                     }

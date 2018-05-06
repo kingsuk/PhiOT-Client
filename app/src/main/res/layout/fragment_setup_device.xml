@@ -48,11 +48,14 @@
                         android:textColor="@color/colorPrimary"
                         android:text="Please make sure you are connected to the Device through Wifi." />
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <Button
+                        android:id="@+id/btnScan"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="(Pull down to scan again)"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:text="Scan"
+                        android:textColor="@color/textColor"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

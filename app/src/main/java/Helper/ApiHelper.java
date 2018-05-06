@@ -48,7 +48,7 @@ public final class ApiHelper {
     {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(context);
-        String url = endpoint;
+        String url = Base_url+endpoint+data;
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -135,7 +135,7 @@ public final class ApiHelper {
                 }
                 catch (Exception e)
                 {
-                    Toast.makeText(context,e.getMessage(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,"Something went wrong! Please try again.",Toast.LENGTH_SHORT).show();
                     ProjectConfig.StaticLog(e.getMessage());
                 }
 
